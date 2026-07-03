@@ -1,0 +1,22 @@
+{
+  "_context": "SSH/PuTTY/plink — Layer 3 connection hook (CreateProcessW courier detection)",
+  "_coverage": [
+    "ssh.exe, putty.exe, plink.exe detected at CreateProcessW time",
+    "Command-line parsed for: user, host, port (-p/-P), one-shot remote command",
+    "BLIND SPOT: commands typed inside an interactive session (encrypted, remote execution)",
+    "BLIND SPOT: other SSH clients not in the courier list",
+    "NOTE: this is connection-policy and audit logging only — no command semantics possible"
+  ],
+
+  "blocklist": [],
+
+  "connectionPolicy": {
+    "_note": "Hosts listed here cause the ssh/putty/plink CreateProcessW call to be blocked (FALSE + ERROR_ACCESS_DENIED). Phase 7 wiring required.",
+    "blockedHosts": [
+      "blocked.example.com",
+      "malicious-jump-host.internal",
+      "exfil.attacker.net"
+    ],
+    "_blockedHostsNote": "Matching is against the parsed host field (user@HOST or plain HOST token). Port-specific blocking not yet implemented."
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "_context": "Global Layer 4 net — CreateProcessW hook in every injected process",
+  "_coverage": [
+    "Any process spawned from an injected shell (cmd.exe, powershell.exe, pwsh.exe)",
+    "Resolved exe path + args are visible post-parse — this is semantic-quality data",
+    "Tokens matched against BaseName(exe) so 'shutdown' matches C:\\Windows\\System32\\shutdown.exe",
+    "BLIND SPOT: processes spawned outside an injected shell (injector has not yet targeted them)"
+  ],
+
+  "blocklist": [
+    { "token": "shutdown",    "reason": "system shutdown or restart" },
+    { "token": "format",      "reason": "destructive disk format" },
+    { "token": "del",         "reason": "destructive file deletion" },
+    { "token": "rm",          "reason": "destructive file deletion" },
+    { "token": "erase",       "reason": "alias for del" },
+    { "token": "rd",          "reason": "remove directory" },
+    { "token": "rmdir",       "reason": "remove directory" },
+    { "token": "taskkill",    "reason": "force-terminate processes" },
+    { "token": "reg",         "reason": "registry modification utility" },
+    { "token": "regsvr32",    "reason": "COM DLL registration — LOLBin code execution vector" },
+    { "token": "mshta",       "reason": "executes HTA scripts — LOLBin" },
+    { "token": "wscript",     "reason": "Windows Script Host — LOLBin" },
+    { "token": "cscript",     "reason": "Windows Script Host (console) — LOLBin" },
+    { "token": "msiexec",     "reason": "arbitrary MSI execution — remote package install vector" },
+    { "token": "certutil",    "reason": "can download and decode files — LOLBin download cradle" },
+    { "token": "bitsadmin",   "reason": "background download utility — LOLBin" },
+    { "token": "schtasks",    "reason": "scheduled task creation — persistence" },
+    { "token": "at",          "reason": "legacy task scheduler — persistence" },
+    { "token": "bcdedit",     "reason": "boot config modification — can make system unbootable" },
+    { "token": "diskpart",    "reason": "destructive disk partitioning" },
+    { "token": "net",         "reason": "network and account management" },
+    { "token": "netsh",       "reason": "network configuration changes" },
+    { "token": "icacls",      "reason": "modifies ACLs" },
+    { "token": "takeown",     "reason": "forcibly takes file ownership" },
+    { "token": "wmic",        "reason": "WMI command-line — broad system control and LOLBin" },
+    { "token": "powershell",  "reason": "spawning a new powershell subprocess to escape context" },
+    { "token": "pwsh",        "reason": "spawning PowerShell 7 subprocess to escape context" },
+    { "token": "cmd",         "reason": "spawning a new cmd subprocess to escape context" }
+  ],
+
+  "connectionPolicy": {
+    "blockedHosts": []
+  }
+}

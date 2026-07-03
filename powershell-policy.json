@@ -1,0 +1,45 @@
+{
+  "_context": "PowerShell / pwsh — Layer 2 AMSI provider (poc-amsi.dll)",
+  "_coverage": [
+    "Script block content submitted to AmsiScanBuffer before execution",
+    "Deobfuscated, expanded content — includes decoded -EncodedCommand payloads",
+    "In-process cmdlets (Remove-Item, Invoke-WebRequest, etc.) — best coverage available",
+    "BLIND SPOT: raw .NET reflection ([System.IO.File]::Delete()) that bypasses AMSI",
+    "BLIND SPOT: AMSI bypass techniques (out of scope for this POC)"
+  ],
+
+  "blocklist": [
+    { "token": "Remove-Item",          "reason": "deletes files, directories, registry keys" },
+    { "token": "rm",                    "reason": "alias for Remove-Item" },
+    { "token": "del",                   "reason": "alias for Remove-Item" },
+    { "token": "ri",                    "reason": "alias for Remove-Item" },
+    { "token": "Invoke-Expression",     "reason": "executes arbitrary string as code — prime injection vector" },
+    { "token": "iex",                   "reason": "alias for Invoke-Expression" },
+    { "token": "Invoke-WebRequest",     "reason": "downloads arbitrary content from the network" },
+    { "token": "wget",                  "reason": "alias for Invoke-WebRequest" },
+    { "token": "curl",                  "reason": "alias for Invoke-WebRequest" },
+    { "token": "Start-BitsTransfer",    "reason": "background file download — LOLBin download vector" },
+    { "token": "Invoke-RestMethod",     "reason": "HTTP client — network exfiltration or download" },
+    { "token": "irm",                   "reason": "alias for Invoke-RestMethod" },
+    { "token": "Stop-Computer",         "reason": "shuts down the local or remote computer" },
+    { "token": "Restart-Computer",      "reason": "restarts the local or remote computer" },
+    { "token": "Stop-Process",          "reason": "force-kills processes" },
+    { "token": "kill",                  "reason": "alias for Stop-Process" },
+    { "token": "spps",                  "reason": "alias for Stop-Process" },
+    { "token": "Clear-EventLog",        "reason": "destroys Windows event log entries — anti-forensics" },
+    { "token": "Remove-EventLog",       "reason": "removes event log sources — anti-forensics" },
+    { "token": "Disable-WindowsOptionalFeature", "reason": "disables OS features" },
+    { "token": "Uninstall-WindowsFeature",       "reason": "removes OS features" },
+    { "token": "Set-ExecutionPolicy",   "reason": "weakens PowerShell script execution restrictions" },
+    { "token": "New-ScheduledTask",     "reason": "creates scheduled tasks — persistence mechanism" },
+    { "token": "Register-ScheduledTask","reason": "registers scheduled tasks — persistence mechanism" },
+    { "token": "Add-MpPreference",      "reason": "modifies Windows Defender exclusions" },
+    { "token": "Set-MpPreference",      "reason": "modifies Windows Defender settings" },
+    { "token": "Disable-NetFirewallRule","reason": "weakens host firewall" },
+    { "token": "blocked.txt",           "reason": "test token for POC validation" }
+  ],
+
+  "connectionPolicy": {
+    "blockedHosts": []
+  }
+}

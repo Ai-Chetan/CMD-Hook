@@ -1,0 +1,35 @@
+{
+  "_context": "cmd.exe — Layer 1 hook (CreateProcessW + file-API hooks injected into cmd.exe)",
+  "_coverage": [
+    "External commands spawned via CreateProcessW (shutdown, format, etc.)",
+    "File-API calls routed through kernel32 DeleteFileW/CopyFileW (programmatic callers)",
+    "BLIND SPOT: cmd builtins (del, copy, echo) that drop to DeleteFileA or NtDeleteFile"
+  ],
+
+  "blocklist": [
+    { "token": "del",      "reason": "destructive file deletion (builtin — partial coverage only)" },
+    { "token": "erase",    "reason": "alias for del — destructive file deletion" },
+    { "token": "rd",       "reason": "remove directory" },
+    { "token": "rmdir",    "reason": "remove directory" },
+    { "token": "format",   "reason": "destructive disk format" },
+    { "token": "shutdown", "reason": "system shutdown or restart" },
+    { "token": "taskkill", "reason": "force-terminate processes" },
+    { "token": "reg",      "reason": "registry modification utility" },
+    { "token": "cipher",   "reason": "encrypts or wipes files on NTFS volumes" },
+    { "token": "schtasks", "reason": "create or modify scheduled tasks" },
+    { "token": "at",       "reason": "legacy task scheduler — privilege escalation vector" },
+    { "token": "net",      "reason": "network and account management — broad destructive potential" },
+    { "token": "netsh",    "reason": "network configuration changes" },
+    { "token": "bcdedit",  "reason": "modifies boot configuration — can make system unbootable" },
+    { "token": "diskpart", "reason": "destructive disk partitioning utility" },
+    { "token": "icacls",   "reason": "modifies file and directory ACLs" },
+    { "token": "takeown",  "reason": "forcibly takes ownership of files" },
+    { "token": "attrib",   "reason": "can hide or make files system-read-only" },
+    { "token": "xcopy",    "reason": "bulk file copy — data exfiltration risk" },
+    { "token": "robocopy", "reason": "bulk file copy — data exfiltration risk" }
+  ],
+
+  "connectionPolicy": {
+    "blockedHosts": []
+  }
+}
