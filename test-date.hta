@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Date Test</title>
+    <HTA:APPLICATION ID="oHTA" APPLICATIONNAME="DateTest" />
+    <script language="VBScript">
+        Sub Window_OnLoad
+            Dim shell, cmd, exec, output
+            Set shell = CreateObject("WScript.Shell")
+            
+            ' The command executes PowerShell with the exact Invoke-Expression "Get-Date"
+            cmd = "powershell.exe -NoProfile -ExecutionPolicy Bypass -Command ""Invoke-Expression 'Get-Date'"""
+            
+            Set exec = shell.Exec(cmd)
+            output = exec.StdOut.ReadAll()
+            
+            ' Display the result
+            MsgBox "Current date/time: " & output, vbInformation, "HTA Test Result"
+            
+            ' Close the HTA window
+            window.close()
+        End Sub
+    </script>
+</head>
+<body>
+    <!-- This is a blank HTA window; the script runs automatically on load -->
+</body>
+</html>
