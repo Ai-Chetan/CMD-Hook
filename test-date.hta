@@ -1,14 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script language="JScript">
-        var shell = new ActiveXObject("WScript.Shell");
-        var cmd = 'powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "Get-Date"';
-        var exec = shell.Exec(cmd);
-        var output = exec.StdOut.ReadAll();
-        alert("Current date/time: " + output);
-        window.close();
-    </script>
+<title>AMSI Policy Test - mshta Launch</title>
+<HTA:APPLICATION
+    ID="AmsiTestHta"
+    APPLICATIONNAME="AMSI Policy Test"
+    SCROLL="no"
+    SINGLEINSTANCE="yes"
+/>
+<script language="VBScript">
+Sub RunTest
+    Dim shell
+    Set shell = CreateObject("WScript.Shell")
+
+    ' Opens a visible PowerShell console, runs the command, and
+    ' pauses so the window stays open and you can read the output.
+    ' Replace Invoke-Expression "Get-Date" with your blocked command as needed.
+    shell.Run "powershell.exe -NoExit -NoProfile -Command ""Invoke-Expression 'Get-Date'""", 1, False
+
+    window.close
+End Sub
+</script>
 </head>
-<body></body>
+<body onload="RunTest">
+</body>
 </html>
