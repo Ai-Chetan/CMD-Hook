@@ -1,0 +1,34 @@
+{
+  "_context": "Global Layer 4 net — CreateProcessW hook in every injected process",
+  "_coverage": [
+    "Any process spawned from an injected shell (cmd.exe, powershell.exe, pwsh.exe)",
+    "Resolved exe path + args are visible post-parse — this is semantic-quality data",
+    "Tokens matched against BaseName(exe) so 'shutdown' matches C:\\Windows\\System32\\shutdown.exe",
+    "Context-aware rules: an entry with \"requiresFlag\" only blocks when that flag is",
+    "present on the same command line. A single CreateProcessW call is one command +",
+    "its flags (no ';' / '|' ambiguity), so flag rules work here too. Example:",
+    "  ping example.com        -> ALLOW",
+    "  ping -t example.com     -> BLOCK   (-t = infinite ping, DoS / noise vector)",
+    "Flags are matched on literal text; '/' style switches (shutdown /s) and '-' style",
+    "(ping -t) are both recognized as flags. Abbreviations are NOT resolved.",
+    "BLIND SPOT: processes spawned outside an injected shell (injector has not yet targeted them)",
+    "",
+    "DEMO PURPOSE: this is the only layer that sees an EXTERNAL BINARY launched from",
+    "PowerShell (e.g. `Start-Process shutdown` or `& taskkill.exe`) — the AMSI layer",
+    "(powershell-policy.json) inspects script/cmdlet content, not the resolved child",
+    "process, so external-binary invocations from PowerShell rely on THIS file.",
+    "The same tokens are also reachable from cmd.exe, so each rule below is",
+    "intentionally shell-agnostic and can be tested from both shells."
+  ],
+
+  "mode": "blacklist",
+
+  "blocklist": [
+    { "token": "shutdown", "reason": "system shutdown or restart — blocked regardless of launching shell" },
+    { "token": "format",   "reason": "destructive disk format — blocked regardless of launching shell" },
+    { "token": "taskkill", "reason": "force-terminate processes — blocked regardless of launching shell" },
+    { "token": "ping", "requiresFlag": "-t", "reason": "infinite ping (-t) — blocked regardless of launching shell" }
+  ],
+
+  "allowlist": []
+}

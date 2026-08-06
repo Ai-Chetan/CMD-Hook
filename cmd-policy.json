@@ -1,0 +1,42 @@
+{
+  "_context": "cmd.exe — Layer 1 hook (CreateProcessW + file-API hooks injected into cmd.exe)",
+  "_coverage": [
+    "External commands spawned via CreateProcessW (shutdown, format, etc.) -- via global-policy.json",
+    "File-API calls routed through kernel32 DeleteFileW/DeleteFileA, RemoveDirectoryW/A,",
+    "MoveFileW/A, MoveFileExW/A -- programmatic AND interactive builtin callers.",
+    "PATH-based protection: a rule here whose token matches the target's basename OR",
+    "exact full path blocks the delete/move/rename. Examples (token = basename):",
+    "  del protected.txt       -> BLOCK   (token 'protected.txt')",
+    "  del anything.txt        -> ALLOW   (name not blocklisted)",
+    "  rmdir secretdir         -> BLOCK   (token 'secretdir')",
+    "  move protected.txt x    -> BLOCK   (either end matches a blocklisted name)",
+    "This CANNOT block 'del <anything>' in general -- the hook sees a path, not the",
+    "command name. For command-based blocking use 'cmd /c del ...' (caught by Layer 4).",
+    "BLIND SPOT: cmd builtins that delete via the NT-native path (NtDeleteFile /",
+    "NtSetInformationFile FileDispositionInfo) below these Win32 exports are not seen;",
+    "ntdll hooks would be required on Windows versions where cmd uses that path."
+  ],
+
+  "mode": "blacklist",
+
+  "blocklist": [
+    { "token": "protected.txt", "reason": "demo path-protection rule — blocks deletion/move of any file named protected.txt" },
+    { "token": "secretdir",     "reason": "demo path-protection rule — blocks removal/move of any directory named secretdir" },
+
+    { "token": "ping", "requiresFlag": "-t", "reason": "infinite ping (-t) — sustained flood / network abuse vector" },
+    { "token": "sc", "requiresFlag": "create", "reason": "creates Windows services" },
+    { "token": "sc", "requiresFlag": "delete", "reason": "removes Windows services" },
+
+    { "token": "del",      "reason": "destructive file deletion" },
+    { "token": "erase",    "reason": "destructive file deletion" },
+    { "token": "rd",       "reason": "remove directory" },
+    { "token": "rmdir",    "reason": "remove directory" },
+    { "token": "format",   "reason": "destructive disk format" },
+    { "token": "shutdown", "reason": "system shutdown or restart" },
+    { "token": "taskkill", "reason": "force-terminate processes" },
+    { "token": "reg",      "reason": "registry modification utility" },
+    { "token": "net",      "reason": "network and account management — broad destructive potential" }
+  ],
+
+  "allowlist": []
+}
