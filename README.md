@@ -1,1 +1,1 @@
-ARCONEndpointControl.exe DASHBOARDURL="https://epmdevintui.arconnet.com:864/UBA_APIGateway/" BACKUPDASHBOARDURL="https://epmdevintui.arconnet.com:864/UBA_APIGateway/" UBARUNNING="true" APIPREFIX="https://internalgra.arconnet.com:10090/" DRIVERMESSAGEPORT=54000 PROXYACTIVE="false" PROXYHOST="10.10.2.10" PROXYPORT="80" GRARUNNING="false" SCMURL="https://10.10.0.22:8012/" SCMRUNNING="true" SCMSECRETKEY="1Mv+pPg/8hgCg9vzgmwVxOJSlhaxpw7OC/PDmmJcrdQm6bP5GxezHPiqEbPoMdX/*(aY8k4M^0dcYH)PkiOWRtpF" SCMTHREADS=1 /log install.log
+
